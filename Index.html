@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>لعبة دمج الحروف والمدود - بازل حقيقي</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(
+                135deg,
+                #e0f7fa,
+                #80deea
+            );
+
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 20px;
+        }
+
+
+        /* =========================
+           العنوان
+           ========================= */
+
+        header {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            color: #00796b;
+            font-size: 2.2rem;
+
+            text-shadow:
+                1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        p.subtitle {
+            color: #004d40;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+
+        /* =========================
+           صندوق اللعبة
+           ========================= */
+
+        .game-container {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 25px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.15);
+
+            width: 100%;
+            max-width: 750px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        /* =========================
+           لوحة البازل
+           ========================= */
+
+        .puzzle-board {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            min-height: 180px;
+
+            width: 100%;
+
+            background: #f1f8e9;
+
+            border:
+                3px dashed #aed581;
+
+            border-radius: 15px;
+
+            padding: 15px;
+        }
+
+
+        /* =========================
+           بطاقة النتيجة
+           ========================= */
+
+        .result-card {
+            width: 140px;
+            height: 110px;
+
+            background-color: #fffaf0;
+
+            border:
+                3px solid #e6dbb9;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 900;
+
+            color: #1b5e20;
+
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.08);
+
+            text-align: center;
+
+            overflow: hidden;
+
+            padding: 0 5px;
+
+            word-break: break-all;
+        }
+
+
+        /* =========================
+           مكان القطعة
+           ========================= */
+
+        .target-slot {
+            border:
+                3px dashed #b0bec5;
+
+            background-color: #fafafa;
+
+            color: #b0bec5;
+
+            font-size: 0.95rem;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            cursor: pointer;
+
+            width: 120px;
+            height: 110px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        /* =========================
+           خيارات الإجابة
+           ========================= */
+
+        .options-container {
+            display: flex;
+
+            gap: 15px;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            min-height: 90px;
+
+            background: #fafafa;
+
+            width: 100%;
+
+            padding: 12px;
+
+            border-radius: 12px;
+
+            border:
+                2px solid #eee;
+        }
+
+
+        .option-card {
+            width: 85px;
+            height: 85px;
+
+            background-color: #ec407a;
+
+            color: white;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 2rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.15);
+
+            transition:
+                all 0.2s ease;
+
+            user-select: none;
+        }
+
+
+        .option-card:hover {
+            transform:
+                translateY(-5px);
+
+            background-color:
+                #d81b60;
+        }
+
+
+        /* =========================
+           النقاط
+           ========================= */
+
+        .score-board {
+            font-size: 1.2rem;
+
+            font-weight: 700;
+
+            color: #3f51b5;
+        }
+
+
+        /* =========================
+           الأزرار
+           ========================= */
+
+        .controls {
+            display: flex;
+
+            gap: 10px;
+        }
+
+
+        button.btn {
+            background: #ff5722;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 20px;
+
+            font-size: 1rem;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            transition:
+                background 0.2s;
+        }
+
+
+        button.btn:hover {
+            background:
+                #e64a19;
+        }
+
+
+        /* =========================
+           الرسائل
+           ========================= */
+
+        .message {
+            font-size: 1.3rem;
+
+            font-weight: 900;
+
+            color: #2e7d32;
+
+            min-height: 35px;
+
+            height: auto;
+
+            text-align: center;
+        }
+
+
+        /* =========================
+           الهاتف
+           ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            p.subtitle {
+                font-size: 0.95rem;
+            }
+
+            .game-container {
+                padding: 15px;
+
+                gap: 15px;
+            }
+
+            .puzzle-board {
+                gap: 8px;
+
+                padding: 10px;
+            }
+
+            .option-card {
+                width: 75px;
+                height: 75px;
+
+                font-size: 1.8rem;
+            }
+
+            .message {
+                font-size: 1.1rem;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         العنوان
+         ========================= -->
+
+    <header>
+
+        <h1>
+            🧩 لعبة دمج الحروف والمدود
+        </h1>
+
+        <p class="subtitle">
+            اختر البطاقة الصحيحة من الأسفل للدمج!
+        </p>
+
+    </header>
+
+
+    <!-- =========================
+         اللعبة
+         ========================= -->
+
+    <div class="game-container">
+
+
+        <!-- النقاط -->
+
+        <div class="score-board">
+
+            النقاط:
+            <span id="score">0</span>
+
+            |
+
+            المستوى:
+            <span id="level">1</span>
+
+            /
+
+            <span id="total-levels">2</span>
+
+        </div>
+
+
+        <!-- الرسالة -->
+
+        <div
+            class="message"
+            id="message"
+        >
+            اختر الحرف الثاني المناسب للتركيب!
+        </div>
+
+
+        <!-- لوحة البازل -->
+
+        <div
+            class="puzzle-board"
+            id="puzzleBoard"
+        >
+        </div>
+
+
+        <!-- عنوان الخيارات -->
+
+        <p
+            style="
+                font-weight: bold;
+                color: #555;
+            "
+            id="optionsLabel"
+        >
+            اختر الحرف الثاني:
+        </p>
+
+
+        <!-- الخيارات -->
+
+        <div
+            class="options-container"
+            id="optionsContainer"
+        >
+        </div>
+
+
+        <!-- زر إعادة اللعبة -->
+
+        <div class="controls">
+
+            <button
+                class="btn"
+                onclick="restartGame()"
+            >
+                إعادة اللعبة
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         التذييل
+         ========================= -->
+
+    <footer>
+
+        <p>
+            صُممت بحب لتعليم الأطفال 🎈
+        </p>
+
+    </footer>
+
+
+
+    <script>
+
+
+        // =====================================================
+        // مستويات اللعبة
+        // =====================================================
+        //
+        // المستوى الأول:
+        //
+        // يـ + ي  = يي
+        // يـ + ـا = يا
+        //
+        // لذلك المستوى الأول لديه إجابتان صحيحتان.
+        //
+        //
+        // المستوى الثاني:
+        //
+        // يا + يا = يايا
+        //
+        //
+        // لا يوجد أي مستوى يبدأ بحرف "ي" منفرد.
+        // =====================================================
+
+
+        const levels = [
+
+            {
+                first: {
+                    id: "first-ya-connected",
+                    text: "يـ"
+                },
+
+                validAnswers: [
+
+                    {
+                        id: "answer-ya-letter",
+                        text: "ي",
+
+                        result: {
+                            id: "result-yy",
+                            text: "يي"
+                        }
+                    },
+
+                    {
+                        id: "answer-alif-connected",
+                        text: "ـا",
+
+                        result: {
+                            id: "result-ya",
+                            text: "يا"
+                        }
+                    }
+
+                ],
+
+                color: "#aed581",
+
+                desc:
+                    "ادمج (يـ) مع الحرف الثاني المناسب"
+            },
+
+
+            {
+                first: {
+                    id: "first-ya",
+                    text: "يا"
+                },
+
+                validAnswers: [
+
+                    {
+                        id: "answer-ya-word",
+                        text: "يا",
+
+                        result: {
+                            id: "result-yaya",
+                            text: "يايا"
+                        }
+                    }
+
+                ],
+
+                color: "#ce93d8",
+
+                desc:
+                    "ادمج (يا) مع الحرف الثاني المناسب"
+            }
+
+        ];
+
+
+
+        // =====================================================
+        // متغيرات اللعبة
+        // =====================================================
+
+        let currentLevelIndex = 0;
+
+        let score = 0;
+
+        let gameState = "chooseSecond";
+
+
+
+        // =====================================================
+        // عناصر HTML
+        // =====================================================
+
+        const puzzleBoard =
+            document.getElementById(
+                "puzzleBoard"
+            );
+
+        const optionsContainer =
+            document.getElementById(
+                "optionsContainer"
+            );
+
+        const messageEl =
+            document.getElementById(
+                "message"
+            );
+
+        const scoreEl =
+            document.getElementById(
+                "score"
+            );
+
+        const levelEl =
+            document.getElementById(
+                "level"
+            );
+
+        const totalLevelsEl =
+            document.getElementById(
+                "total-levels"
+            );
+
+        const optionsLabel =
+            document.getElementById(
+                "optionsLabel"
+            );
+
+
+
+        // =====================================================
+        // تشغيل الصوت
+        // =====================================================
+
+        function playSound(type) {
+
+            const AudioContext =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+
+            if (!AudioContext) {
+                return;
+            }
+
+
+            const ctx =
+                new AudioContext();
+
+
+            const osc =
+                ctx.createOscillator();
+
+
+            const gain =
+                ctx.createGain();
+
+
+            osc.connect(gain);
+
+            gain.connect(
+                ctx.destination
+            );
+
+
+            if (type === "success") {
+
+                osc.frequency.setValueAtTime(
+                    400,
+                    ctx.currentTime
+                );
+
+                osc.frequency.exponentialRampToValueAtTime(
+                    800,
+                    ctx.currentTime + 0.2
+                );
+
+                gain.gain.setValueAtTime(
+                    0.3,
+                    ctx.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.01,
+                    ctx.currentTime + 0.3
+                );
+
+                osc.start();
+
+                osc.stop(
+                    ctx.currentTime + 0.3
+                );
+
+            } else {
+
+                osc.frequency.setValueAtTime(
+                    200,
+                    ctx.currentTime
+                );
+
+                osc.frequency.setValueAtTime(
+                    150,
+                    ctx.currentTime + 0.1
+                );
+
+                gain.gain.setValueAtTime(
+                    0.3,
+                    ctx.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.01,
+                    ctx.currentTime + 0.2
+                );
+
+                osc.start();
+
+                osc.stop(
+                    ctx.currentTime + 0.2
+                );
+            }
+        }
+
+
+
+        // =====================================================
+        // إنشاء قطعة البازل
+        // =====================================================
+
+        function createPuzzleSVG(
+            color,
+            text,
+            type
+        ) {
+
+            let path = "";
+
+
+            // القطعة الأولى
+            if (type === 1) {
+
+                path =
+                    "M 15 10 " +
+                    "C 25 10, 25 25, 15 40 " +
+                    "C 5 55, 5 65, 15 80 " +
+                    "C 25 95, 25 110, 15 110 " +
+                    "H 105 " +
+                    "C 115 110, 115 95, 105 80 " +
+                    "C 95 65, 95 55, 105 40 " +
+                    "C 115 25, 115 10, 105 10 Z";
+
+            }
+
+
+            // القطعة الثانية
+            else {
+
+                path =
+                    "M 15 10 H 105 " +
+                    "C 95 10, 95 25, 105 40 " +
+                    "C 115 55, 115 65, 105 80 " +
+                    "C 95 95, 95 110, 105 110 " +
+                    "H 15 " +
+                    "C 25 110, 25 95, 15 80 " +
+                    "C 5 65, 5 55, 15 40 " +
+                    "C 25 25, 25 10, 15 10 Z";
+
+            }
+
+
+            return `
+
+                <svg
+                    width="120"
+                    height="120"
+                    viewBox="0 0 120 120"
+                    style="
+                        filter:
+                        drop-shadow(
+                            0px 4px 6px
+                            rgba(0,0,0,0.15)
+                        );
+                    "
+                >
+
+                    <path
+                        d="${path}"
+                        fill="${color}"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                    />
+
+                    <text
+                        x="60"
+                        y="68"
+                        font-family="'Cairo', sans-serif"
+                        font-size="44"
+                        font-weight="bold"
+                        fill="#222"
+                        text-anchor="middle"
+                    >${text}</text>
+
+                </svg>
+
+            `;
+        }
+
+
+
+        // =====================================================
+        // إنشاء خيار
+        // =====================================================
+
+        function createOptionCard(
+            text,
+            backgroundColor,
+            clickFunction
+        ) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "option-card";
+
+
+            card.textContent =
+                text;
+
+
+            if (backgroundColor) {
+
+                card.style.backgroundColor =
+                    backgroundColor;
+            }
+
+
+            card.onclick =
+                clickFunction;
+
+
+            return card;
+        }
+
+
+
+        // =====================================================
+        // تحميل المستوى
+        // =====================================================
+
+        function loadLevel() {
+
+
+            // إذا انتهت المستويات
+            if (
+                currentLevelIndex >=
+                levels.length
+            ) {
+
+                currentLevelIndex = 0;
+            }
+
+
+            gameState =
+                "chooseSecond";
+
+
+            const current =
+                levels[
+                    currentLevelIndex
+                ];
+
+
+            // تحديث المعلومات
+            levelEl.textContent =
+                currentLevelIndex + 1;
+
+
+            totalLevelsEl.textContent =
+                levels.length;
+
+
+            messageEl.textContent =
+                current.desc;
+
+
+            optionsLabel.textContent =
+                "اختر الحرف الثاني:";
+
+
+            puzzleBoard.innerHTML =
+                "";
+
+
+            optionsContainer.innerHTML =
+                "";
+
+
+
+            // =================================================
+            // القطعة الأولى
+            // =================================================
+
+            const piece1Div =
+                document.createElement(
+                    "div"
+                );
+
+
+            piece1Div.innerHTML =
+                createPuzzleSVG(
+                    current.color,
+                    current.first.text,
+                    1
+                );
+
+
+            puzzleBoard.appendChild(
+                piece1Div
+            );
+
+
+
+            // =================================================
+            // مكان القطعة الثانية
+            // =================================================
+
+            const targetSlot =
+                document.createElement(
+                    "div"
+                );
+
+
+            targetSlot.className =
+                "target-slot";
+
+
+            targetSlot.id =
+                "targetSlot";
+
+
+            targetSlot.innerHTML =
+                "ضع البطاقة هنا";
+
+
+            puzzleBoard.appendChild(
+                targetSlot
+            );
+
+
+
+            // =================================================
+            // السهم
+            // =================================================
+
+            const arrow =
+                document.createElement(
+                    "div"
+                );
+
+
+            arrow.style.fontSize =
+                "1.8rem";
+
+
+            arrow.style.margin =
+                "0 8px";
+
+
+            arrow.style.color =
+                "#ffa726";
+
+
+            arrow.innerHTML =
+                "⬅️";
+
+
+            puzzleBoard.appendChild(
+                arrow
+            );
+
+
+
+            // =================================================
+            // خانة النتيجة
+            // =================================================
+
+            const resultSlot =
+                document.createElement(
+                    "div"
+                );
+
+
+            resultSlot.className =
+                "result-card target-slot";
+
+
+            resultSlot.id =
+                "resultSlot";
+
+
+            resultSlot.innerHTML =
+                "النتيجة؟";
+
+
+            puzzleBoard.appendChild(
+                resultSlot
+            );
+
+
+
+            // =================================================
+            // الخيارات الصحيحة
+            // =================================================
+
+            const options = [
+                ...current.validAnswers
+            ];
+
+
+
+            // =================================================
+            // الخيارات الخاطئة
+            // =================================================
+
+            const wrongOptions = [
+
+                {
+                    id: "wrong-ya",
+                    text: "يا"
+                },
+
+                {
+                    id: "wrong-ya-letter",
+                    text: "ي"
+                },
+
+                {
+                    id: "wrong-alif",
+                    text: "ـا"
+                }
+
+            ];
+
+
+
+            // =================================================
+            // إضافة الخيارات الخاطئة
+            //
+            // مهم:
+            // إذا كان النص موجودًا كإجابة صحيحة
+            // فلا نضيف نسخة خاطئة منه.
+            // =================================================
+
+            wrongOptions.forEach(
+                wrongOption => {
+
+
+                    const alreadyCorrect =
+                        options.some(
+                            option =>
+                                option.text ===
+                                wrongOption.text
+                        );
+
+
+                    if (
+                        !alreadyCorrect
+                    ) {
+
+                        options.push(
+                            wrongOption
+                        );
+                    }
+
+                }
+            );
+
+
+
+            // =================================================
+            // منع أي تكرار في الخيارات
+            //
+            // هنا نستخدم النص الظاهر أيضًا.
+            // =================================================
+
+            const uniqueOptions = [];
+
+
+            options.forEach(
+                option => {
+
+                    const alreadyExists =
+                        uniqueOptions.some(
+                            existing =>
+                                existing.text ===
+                                option.text
+                        );
+
+
+                    if (
+                        !alreadyExists
+                    ) {
+
+                        uniqueOptions.push(
+                            option
+                        );
+                    }
+
+                }
+            );
+
+
+
+            // =================================================
+            // خلط الخيارات
+            // =================================================
+
+            uniqueOptions.sort(
+                () =>
+                    Math.random() - 0.5
+            );
+
+
+
+            // =================================================
+            // عرض الخيارات
+            // =================================================
+
+            uniqueOptions.forEach(
+                option => {
+
+
+                    const card =
+                        createOptionCard(
+
+                            option.text,
+
+                            null,
+
+                            () => {
+
+                                handleSecondSelection(
+                                    option
+                                );
+
+                            }
+                        );
+
+
+                    optionsContainer.appendChild(
+                        card
+                    );
+
+                }
+            );
+        }
+
+
+
+        // =====================================================
+        // اختيار الحرف الثاني
+        // =====================================================
+
+        function handleSecondSelection(
+            selected
+        ) {
+
+
+            if (
+                gameState !==
+                "chooseSecond"
+            ) {
+
+                return;
+            }
+
+
+
+            const current =
+                levels[
+                    currentLevelIndex
+                ];
+
+
+
+            const targetSlot =
+                document.getElementById(
+                    "targetSlot"
+                );
+
+
+
+            // =================================================
+            // البحث عن الإجابة الصحيحة
+            //
+            // نبحث بالـ ID.
+            // =================================================
+
+            const correctAnswer =
+                current.validAnswers.find(
+                    answer =>
+                        answer.id ===
+                        selected.id
+                );
+
+
+
+            // =================================================
+            // الإجابة صحيحة
+            // =================================================
+
+            if (correctAnswer) {
+
+
+                targetSlot.style.border =
+                    "none";
+
+
+                targetSlot.style.background =
+                    "transparent";
+
+
+                targetSlot.innerHTML =
+                    createPuzzleSVG(
+
+                        current.color,
+
+                        selected.text,
+
+                        2
+                    );
+
+
+                playSound(
+                    "success"
+                );
+
+
+                messageEl.textContent =
+                    "🎉 ممتاز! الآن اختر النتيجة الصحيحة.";
+
+
+                gameState =
+                    "chooseResult";
+
+
+                optionsLabel.textContent =
+                    "اختر النتيجة الصحيحة:";
+
+
+                optionsContainer.innerHTML =
+                    "";
+
+
+
+                // =================================================
+                // النتيجة الصحيحة
+                // =================================================
+
+                const correctResult =
+                    correctAnswer.result;
+
+
+
+                // =================================================
+                // النتائج المحتملة
+                // =================================================
+
+                const possibleResults = [
+
+                    {
+                        id: "result-yy",
+                        text: "يي"
+                    },
+
+                    {
+                        id: "result-ya",
+                        text: "يا"
+                    },
+
+                    {
+                        id: "result-yaya",
+                        text: "يايا"
+                    }
+
+                ];
+
+
+
+                // =================================================
+                // إضافة النتيجة الصحيحة
+                //
+                // مع منع تكرار النص.
+                // =================================================
+
+                const results = [];
+
+
+
+                // أولاً النتيجة الصحيحة
+                results.push(
+                    correctResult
+                );
+
+
+
+                // ثم النتائج الأخرى
+                possibleResults.forEach(
+                    result => {
+
+
+                        const alreadyExists =
+                            results.some(
+                                existing =>
+                                    existing.text ===
+                                    result.text
+                            );
+
+
+                        if (
+                            !alreadyExists
+                        ) {
+
+                            results.push(
+                                result
+                            );
+
+                        }
+
+                    }
+                );
+
+
+
+                // =================================================
+                // منع التكرار النهائي
+                // =================================================
+
+                const uniqueResults =
+                    [];
+
+
+                results.forEach(
+                    result => {
+
+                        const exists =
+                            uniqueResults.some(
+                                existing =>
+                                    existing.text ===
+                                    result.text
+                            );
+
+
+                        if (!exists) {
+
+                            uniqueResults.push(
+                                result
+                            );
+
+                        }
+
+                    }
+                );
+
+
+
+                // =================================================
+                // خلط النتائج
+                // =================================================
+
+                uniqueResults.sort(
+                    () =>
+                        Math.random() - 0.5
+                );
+
+
+
+                // =================================================
+                // عرض النتائج
+                // =================================================
+
+                uniqueResults.forEach(
+                    result => {
+
+
+                        const card =
+                            createOptionCard(
+
+                                result.text,
+
+                                "#ab47bc",
+
+                                () => {
+
+                                    handleResultSelection(
+
+                                        result,
+
+                                        correctResult
+                                    );
+
+                                }
+                            );
+
+
+                        optionsContainer.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+
+            }
+
+            // =================================================
+            // الإجابة خاطئة
+            // =================================================
+
+            else {
+
+
+                messageEl.textContent =
+                    "❌ خطأ، هذا ليس الحرف الثاني المناسب!";
+
+
+                playSound(
+                    "wrong"
+                );
+
+
+                targetSlot.style.borderColor =
+                    "#ff5252";
+
+
+                setTimeout(
+                    () => {
+
+                        targetSlot.style.borderColor =
+                            "#b0bec5";
+
+                    },
+
+                    500
+                );
+            }
+        }
+
+
+
+        // =====================================================
+        // اختيار النتيجة النهائية
+        // =====================================================
+
+        function handleResultSelection(
+            selectedResult,
+            expectedResult
+        ) {
+
+
+            if (
+                gameState !==
+                "chooseResult"
+            ) {
+
+                return;
+            }
+
+
+
+            const resultSlot =
+                document.getElementById(
+                    "resultSlot"
+                );
+
+
+
+            // =================================================
+            // المقارنة بالـ ID
+            // =================================================
+
+            const isCorrect =
+                selectedResult.id ===
+                expectedResult.id;
+
+
+
+            // =================================================
+            // صحيح
+            // =================================================
+
+            if (isCorrect) {
+
+
+                resultSlot.style.border =
+                    "3px solid #66bb6a";
+
+
+                resultSlot.style.backgroundColor =
+                    "#e8f5e9";
+
+
+
+                // =================================================
+                // حجم الخط
+                // =================================================
+
+                let fontSize =
+                    "2.4rem";
+
+
+                if (
+                    expectedResult.text.length >
+                    3
+                ) {
+
+                    fontSize =
+                        "1.5rem";
+
+                }
+
+                else if (
+                    expectedResult.text.length ===
+                    3
+                ) {
+
+                    fontSize =
+                        "1.9rem";
+
+                }
+
+                else if (
+                    expectedResult.text.length ===
+                    2
+                ) {
+
+                    fontSize =
+                        "2.2rem";
+                }
+
+
+
+                resultSlot.style.fontSize =
+                    fontSize;
+
+
+
+                resultSlot.innerHTML =
+                    expectedResult.text;
+
+
+
+                messageEl.textContent =
+                    `🎉 أحسنت يا بطل! دمج ناجح (${expectedResult.text})`;
+
+
+
+                playSound(
+                    "success"
+                );
+
+
+
+                // إضافة النقاط
+                score += 10;
+
+
+                scoreEl.textContent =
+                    score;
+
+
+
+                // إخفاء الخيارات
+                optionsContainer.innerHTML =
+                    "";
+
+
+
+                // =================================================
+                // الانتقال للمستوى التالي
+                // =================================================
+
+                setTimeout(
+                    () => {
+
+                        currentLevelIndex++;
+
+                        loadLevel();
+
+                    },
+
+                    2000
+                );
+
+
+            }
+
+            // =================================================
+            // خطأ
+            // =================================================
+
+            else {
+
+
+                messageEl.textContent =
+                    "❌ النتيجة غير صحيحة، حاول مجدداً!";
+
+
+                playSound(
+                    "wrong"
+                );
+
+
+                resultSlot.style.borderColor =
+                    "#ff5252";
+
+
+                setTimeout(
+                    () => {
+
+                        resultSlot.style.borderColor =
+                            "#e6dbb9";
+
+                    },
+
+                    500
+                );
+            }
+        }
+
+
+
+        // =====================================================
+        // إعادة اللعبة
+        // =====================================================
+
+        function restartGame() {
+
+            currentLevelIndex =
+                0;
+
+            score =
+                0;
+
+            scoreEl.textContent =
+                "0";
+
+            gameState =
+                "chooseSecond";
+
+            loadLevel();
+        }
+
+
+
+        // =====================================================
+        // بدء اللعبة
+        // =====================================================
+
+        loadLevel();
+
+    </script>
+
+</body>
+
+</html>
